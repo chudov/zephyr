@@ -17,7 +17,15 @@ zephyr_library_sources_ifdef(CONFIG_SSD16XX		ssd16xx.c)
 zephyr_library_sources_ifdef(CONFIG_ST7789V		display_st7789v.c)
 zephyr_library_sources_ifdef(CONFIG_ST7735R		display_st7735r.c)
 
+
+if (CONFIG_ILI9XXX)
+  zephyr_sources(display_ili9xxx.c)
+endif()
+zephyr_sources_ifdef(CONFIG_ILI9340 display_ili9340.c)
+zephyr_sources_ifdef(CONFIG_ILI9488 display_ili9488.c)
+
 zephyr_library_sources_ifdef(CONFIG_MICROBIT_DISPLAY
 	mb_display.c
 	mb_font.c
 )
+
