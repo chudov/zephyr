@@ -85,6 +85,7 @@
 	ITERABLE_SECTION_RAM_GC_ALLOWED(k_mbox, 4)
 	ITERABLE_SECTION_RAM_GC_ALLOWED(k_pipe, 4)
 	ITERABLE_SECTION_RAM_GC_ALLOWED(k_sem, 4)
+	ITERABLE_SECTION_RAM_GC_ALLOWED(k_event, 4)
 	ITERABLE_SECTION_RAM_GC_ALLOWED(k_queue, 4)
 	ITERABLE_SECTION_RAM_GC_ALLOWED(k_condvar, 4)
 
@@ -139,3 +140,7 @@
 #ifdef CONFIG_USERSPACE
 	_static_kernel_objects_end = .;
 #endif
+
+#if defined(CONFIG_ZTEST)
+	ITERABLE_SECTION_RAM(ztest_suite_node, 4)
+#endif /* CONFIG_ZTEST */
