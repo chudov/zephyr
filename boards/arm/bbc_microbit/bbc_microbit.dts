@@ -39,6 +39,46 @@
 			gpios = <&gpio0 26 GPIO_ACTIVE_LOW>;
 		};
 	};
+	led_matrix {
+		compatible = "gpio-leds";
+		row_1: led_row1 {
+			gpios = <&gpio0 13 GPIO_ACTIVE_HIGH>;
+		};
+		row_2: led_row2 {
+			gpios = <&gpio0 14 GPIO_ACTIVE_HIGH>;
+		};
+		row_3: led_row3 {
+			gpios = <&gpio0 15 GPIO_ACTIVE_HIGH>;
+		};
+
+		col_1: led_col1 {
+			gpios = <&gpio0 4 GPIO_ACTIVE_LOW>;
+		};
+		col_2: led_col2 {
+			gpios = <&gpio0 5 GPIO_ACTIVE_LOW>;
+		};
+		col_3: led_col3 {
+			gpios = <&gpio0 6 GPIO_ACTIVE_LOW>;
+		};
+		col_4: led_col4 {
+			gpios = <&gpio0 7 GPIO_ACTIVE_LOW>;
+		};
+		col_5: led_col5 {
+			gpios = <&gpio0 8 GPIO_ACTIVE_LOW>;
+		};
+		col_6: led_col6 {
+			gpios = <&gpio0 9 GPIO_ACTIVE_LOW>;
+		};
+		col_7: led_col7 {
+			gpios = <&gpio0 10 GPIO_ACTIVE_LOW>;
+		};
+		col_8: led_col8 {
+			gpios = <&gpio0 11 GPIO_ACTIVE_LOW>;
+		};
+		col_9: led_col9 {
+			gpios = <&gpio0 12 GPIO_ACTIVE_LOW>;
+		};
+	};
 
 };
 

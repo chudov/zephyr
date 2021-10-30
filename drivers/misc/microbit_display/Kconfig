@@ -30,64 +30,59 @@ config MICROBIT_DISPLAY_TIMER_PRIORITY
 		LED matrix. Can probably be low as it is not
 		critical.
 
-
+config MICROBIT_DISPLAY_REFRESH_RATE_HZ
+	int "Display refresh rate in [Hz]"
+	range 10 2500
+	default 100
+	help
+		Display refresh rate in Hz. Higher rate leads
+		to higher CPU load.
 
 choice MICROBIT_DISPLAY_TIMER
 		prompt "NRFX Hardware Timer"
 		default MICROBIT_DISPLAY_TIMER3
 		help
 			Select the hardware timer instance used by this driver.
+			Support of the selected timer will be enabled automatically.
 			Beware of conflicts with other drivers, e.g. for bluetooth.
 
-# make sure the chosen timer is activated
+# force activation of chosen timer
 
 config MICROBIT_DISPLAY_TIMER0
 		bool "TIMER0"
 		depends on HAS_HW_NRF_TIMER0
-		imply NRFX_TIMER0
+		depends on !NRF_HW_TIMER0_RESERVED
+		select NRFX_TIMER
+		select NRFX_TIMER0
 
 config MICROBIT_DISPLAY_TIMER1
 		bool "TIMER1"
 		depends on HAS_HW_NRF_TIMER1
-		imply NRFX_TIMER1
+		depends on !NRF_HW_TIMER1_RESERVED
+		select NRFX_TIMER
+		select NRFX_TIMER1
 
 config MICROBIT_DISPLAY_TIMER2
 		bool "TIMER2"
 		depends on HAS_HW_NRF_TIMER2
-		imply NRFX_TIMER2
+		depends on !NRF_HW_TIMER2_RESERVED
+		select NRFX_TIMER
+		select NRFX_TIMER2
 
 config MICROBIT_DISPLAY_TIMER3
 		bool "TIMER3"
 		depends on HAS_HW_NRF_TIMER3
-		imply NRFX_TIMER3
+		depends on !NRF_HW_TIMER3_RESERVED
+		select NRFX_TIMER
+		select NRFX_TIMER3
 
 config MICROBIT_DISPLAY_TIMER4
 		bool "TIMER4"
 		depends on HAS_HW_NRF_TIMER4
-		imply NRFX_TIMER4
+		depends on !NRF_HW_TIMER4_RESERVED
+		select NRFX_TIMER
+		select NRFX_TIMER4
 
 endchoice
-
-if MICROBIT_DISPLAY_TIMER0 && !NRFX_TIMER0
-	comment "Activate NRFX_TIMER0 to meet dependency"
-endif
-
-if MICROBIT_DISPLAY_TIMER1 && !NRFX_TIMER1
-	comment "Activate NRFX_TIMER1 to meet dependency"
-endif
-
-if MICROBIT_DISPLAY_TIMER2 && !NRFX_TIMER2
-	comment "Activate NRFX_TIMER2 to meet dependency"
-endif
-
-if MICROBIT_DISPLAY_TIMER3 && !NRFX_TIMER3
-	comment "Activate NRFX_TIMER3 to meet dependency"
-endif
-
-if MICROBIT_DISPLAY_TIMER4 && !NRFX_TIMER4
-	comment "Activate NRFX_TIMER4 to meet dependency"
-endif
-
-
 
 endif

@@ -1,5 +1,6 @@
 /* SPDX-License-Identifier: Apache-2.0
  * Copyright (c) 2021 Peter Niebert, Aix-Marseille University
+ * Copyright (c) 2021 Alexander Chudov, chudov@gmail.com
  *
  *
  * New implementation of mb_display.h for compatibility with Microbit V2.
@@ -37,23 +38,64 @@ LOG_MODULE_REGISTER(mb2_display, LOG_LEVEL_DBG);
 
 /************ pin related definitions for micro:bit V1 and V2 *********/
 
-#define DISPLAY_ROWS 5
-#define DISPLAY_COLS 5
+#define DISPLAY_ROWS (5)
+#define DISPLAY_COLS (5)
+#define SYMBOL_WIDTH (DISPLAY_COLS)
 
 #ifdef CONFIG_BOARD_BBC_MICROBIT
+/*
+1.1 2.4 1.2 2.5 1.3
+3.4 3.5 3.6 3.7 3.8
+2.2 1.9 2.3 3.9 2.1
+1.8 1.7 1.6 1.5 1.4
+3.3 2.7 3.1 2.6 3.2
+*/
 
-static const uint16_t led_column_row[25] = { 13 << 8 | 4, 14 << 8 | 7,
-	13 << 8 | 5, 14 << 8 | 8, 13 << 8 | 6, 15 << 8 | 7,	 15 << 8 | 8,
-	15 << 8 | 9, 15 << 8 | 10, 15 << 8 | 11, 14 << 8 | 5, 13 << 8 | 12,
-	14 << 8 | 6, 15 << 8 | 12, 14 << 8 | 4, 13 << 8 | 11,
-	13 << 8 | 10, 13 << 8 | 9,	 13 << 8 | 8, 13 << 8 | 7,
-	15 << 8 | 6, 14 << 8 | 10, 15 << 8 | 4, 14 << 8 | 9,
-	15 << 8 | 5 };
+static const uint16_t led_row_column[DISPLAY_ROWS * DISPLAY_COLS] = { 
+	DT_GPIO_PIN(DT_NODELABEL(row_1), gpios) << 8 | DT_GPIO_PIN(DT_NODELABEL(col_1), gpios),
+	DT_GPIO_PIN(DT_NODELABEL(row_2), gpios) << 8 | DT_GPIO_PIN(DT_NODELABEL(col_4), gpios),
+	DT_GPIO_PIN(DT_NODELABEL(row_1), gpios) << 8 | DT_GPIO_PIN(DT_NODELABEL(col_2), gpios),
+	DT_GPIO_PIN(DT_NODELABEL(row_2), gpios) << 8 | DT_GPIO_PIN(DT_NODELABEL(col_5), gpios),
+	DT_GPIO_PIN(DT_NODELABEL(row_1), gpios) << 8 | DT_GPIO_PIN(DT_NODELABEL(col_3), gpios),
 
-static const uint32_t row_mask0 =
-	1 << 4 | 1 << 5 | 1 << 6 | 1 << 7 | 1 << 8 | 1 << 9 | 1 << 10 | 1 << 11 | 1 << 12;
+	DT_GPIO_PIN(DT_NODELABEL(row_3), gpios) << 8 | DT_GPIO_PIN(DT_NODELABEL(col_4), gpios),
+	DT_GPIO_PIN(DT_NODELABEL(row_3), gpios) << 8 | DT_GPIO_PIN(DT_NODELABEL(col_5), gpios),
+	DT_GPIO_PIN(DT_NODELABEL(row_3), gpios) << 8 | DT_GPIO_PIN(DT_NODELABEL(col_6), gpios),
+	DT_GPIO_PIN(DT_NODELABEL(row_3), gpios) << 8 | DT_GPIO_PIN(DT_NODELABEL(col_7), gpios),
+	DT_GPIO_PIN(DT_NODELABEL(row_3), gpios) << 8 | DT_GPIO_PIN(DT_NODELABEL(col_8), gpios),
 
-static const uint32_t col_mask = 1 << 13 | 1 << 14 | 1 << 15;
+	DT_GPIO_PIN(DT_NODELABEL(row_2), gpios) << 8 | DT_GPIO_PIN(DT_NODELABEL(col_2), gpios),
+	DT_GPIO_PIN(DT_NODELABEL(row_1), gpios) << 8 | DT_GPIO_PIN(DT_NODELABEL(col_9), gpios),
+	DT_GPIO_PIN(DT_NODELABEL(row_2), gpios) << 8 | DT_GPIO_PIN(DT_NODELABEL(col_3), gpios),
+	DT_GPIO_PIN(DT_NODELABEL(row_3), gpios) << 8 | DT_GPIO_PIN(DT_NODELABEL(col_9), gpios),
+	DT_GPIO_PIN(DT_NODELABEL(row_2), gpios) << 8 | DT_GPIO_PIN(DT_NODELABEL(col_1), gpios),
+
+	DT_GPIO_PIN(DT_NODELABEL(row_1), gpios) << 8 | DT_GPIO_PIN(DT_NODELABEL(col_8), gpios),
+	DT_GPIO_PIN(DT_NODELABEL(row_1), gpios) << 8 | DT_GPIO_PIN(DT_NODELABEL(col_7), gpios),
+	DT_GPIO_PIN(DT_NODELABEL(row_1), gpios) << 8 | DT_GPIO_PIN(DT_NODELABEL(col_6), gpios),
+	DT_GPIO_PIN(DT_NODELABEL(row_1), gpios) << 8 | DT_GPIO_PIN(DT_NODELABEL(col_5), gpios),
+	DT_GPIO_PIN(DT_NODELABEL(row_1), gpios) << 8 | DT_GPIO_PIN(DT_NODELABEL(col_4), gpios),
+
+	DT_GPIO_PIN(DT_NODELABEL(row_3), gpios) << 8 | DT_GPIO_PIN(DT_NODELABEL(col_3), gpios),
+	DT_GPIO_PIN(DT_NODELABEL(row_2), gpios) << 8 | DT_GPIO_PIN(DT_NODELABEL(col_7), gpios),
+	DT_GPIO_PIN(DT_NODELABEL(row_3), gpios) << 8 | DT_GPIO_PIN(DT_NODELABEL(col_1), gpios),
+	DT_GPIO_PIN(DT_NODELABEL(row_2), gpios) << 8 | DT_GPIO_PIN(DT_NODELABEL(col_6), gpios),
+	DT_GPIO_PIN(DT_NODELABEL(row_3), gpios) << 8 | DT_GPIO_PIN(DT_NODELABEL(col_2), gpios)
+};
+
+static const uint32_t col_mask0 = 1 << DT_GPIO_PIN(DT_NODELABEL(col_1), gpios) |
+								  1 << DT_GPIO_PIN(DT_NODELABEL(col_2), gpios) |
+                                  1 << DT_GPIO_PIN(DT_NODELABEL(col_3), gpios) |
+                                  1 << DT_GPIO_PIN(DT_NODELABEL(col_4), gpios) |
+                                  1 << DT_GPIO_PIN(DT_NODELABEL(col_5), gpios) |
+                                  1 << DT_GPIO_PIN(DT_NODELABEL(col_6), gpios) |
+                                  1 << DT_GPIO_PIN(DT_NODELABEL(col_7), gpios) |
+                                  1 << DT_GPIO_PIN(DT_NODELABEL(col_8), gpios) |
+								  1 << DT_GPIO_PIN(DT_NODELABEL(col_9), gpios);
+
+static const uint32_t row_mask = 1 << DT_GPIO_PIN(DT_NODELABEL(row_1), gpios) |
+								 1 << DT_GPIO_PIN(DT_NODELABEL(row_2), gpios) |
+								 1 << DT_GPIO_PIN(DT_NODELABEL(row_3), gpios);
 
 /* use low level inline function for pin set */
 #define mypinset nrf_gpio_pin_set
@@ -64,19 +106,50 @@ static const uint32_t col_mask = 1 << 13 | 1 << 14 | 1 << 15;
 
 /* columns/anodes followed by rows/cathodes */
 
-static const uint16_t led_column_row[25] = {
-	21 << 8 | 28, 21 << 8 | 11, 21 << 8 | 31, 21 << 8 | 37, 21 << 8 | 30,
-	22 << 8 | 28, 22 << 8 | 11, 22 << 8 | 31, 22 << 8 | 37, 22 << 8 | 30,
-	15 << 8 | 28, 15 << 8 | 11, 15 << 8 | 31, 15 << 8 | 37, 15 << 8 | 30,
-	24 << 8 | 28, 24 << 8 | 11, 24 << 8 | 31, 24 << 8 | 37, 24 << 8 | 30,
-	19 << 8 | 28, 19 << 8 | 11, 19 << 8 | 31, 19 << 8 | 37, 19 << 8 | 30
+static const uint16_t led_row_column[DISPLAY_ROWS * DISPLAY_COLS] = {
+	DT_GPIO_PIN(DT_NODELABEL(row_1), gpios) << 8 | DT_GPIO_PIN(DT_NODELABEL(col_1), gpios),
+	DT_GPIO_PIN(DT_NODELABEL(row_1), gpios) << 8 | DT_GPIO_PIN(DT_NODELABEL(col_2), gpios),
+	DT_GPIO_PIN(DT_NODELABEL(row_1), gpios) << 8 | DT_GPIO_PIN(DT_NODELABEL(col_3), gpios),
+	DT_GPIO_PIN(DT_NODELABEL(row_1), gpios) << 8 | (32 + DT_GPIO_PIN(DT_NODELABEL(col_4), gpios)),
+	DT_GPIO_PIN(DT_NODELABEL(row_1), gpios) << 8 | DT_GPIO_PIN(DT_NODELABEL(col_5), gpios),
+
+	DT_GPIO_PIN(DT_NODELABEL(row_2), gpios) << 8 | DT_GPIO_PIN(DT_NODELABEL(col_1), gpios),
+	DT_GPIO_PIN(DT_NODELABEL(row_2), gpios) << 8 | DT_GPIO_PIN(DT_NODELABEL(col_2), gpios),
+	DT_GPIO_PIN(DT_NODELABEL(row_2), gpios) << 8 | DT_GPIO_PIN(DT_NODELABEL(col_3), gpios),
+	DT_GPIO_PIN(DT_NODELABEL(row_2), gpios) << 8 | (32 + DT_GPIO_PIN(DT_NODELABEL(col_4), gpios)),
+	DT_GPIO_PIN(DT_NODELABEL(row_2), gpios) << 8 | DT_GPIO_PIN(DT_NODELABEL(col_5), gpios),
+
+	DT_GPIO_PIN(DT_NODELABEL(row_3), gpios) << 8 | DT_GPIO_PIN(DT_NODELABEL(col_1), gpios),
+	DT_GPIO_PIN(DT_NODELABEL(row_3), gpios) << 8 | DT_GPIO_PIN(DT_NODELABEL(col_2), gpios),
+	DT_GPIO_PIN(DT_NODELABEL(row_3), gpios) << 8 | DT_GPIO_PIN(DT_NODELABEL(col_3), gpios),
+	DT_GPIO_PIN(DT_NODELABEL(row_3), gpios) << 8 | (32 + DT_GPIO_PIN(DT_NODELABEL(col_4), gpios)),
+	DT_GPIO_PIN(DT_NODELABEL(row_3), gpios) << 8 | DT_GPIO_PIN(DT_NODELABEL(col_5), gpios),
+
+	DT_GPIO_PIN(DT_NODELABEL(row_4), gpios) << 8 | DT_GPIO_PIN(DT_NODELABEL(col_1), gpios),
+	DT_GPIO_PIN(DT_NODELABEL(row_4), gpios) << 8 | DT_GPIO_PIN(DT_NODELABEL(col_2), gpios),
+	DT_GPIO_PIN(DT_NODELABEL(row_4), gpios) << 8 | DT_GPIO_PIN(DT_NODELABEL(col_3), gpios),
+	DT_GPIO_PIN(DT_NODELABEL(row_4), gpios) << 8 | (32 + DT_GPIO_PIN(DT_NODELABEL(col_4), gpios)),
+	DT_GPIO_PIN(DT_NODELABEL(row_4), gpios) << 8 | DT_GPIO_PIN(DT_NODELABEL(col_5), gpios),
+
+	DT_GPIO_PIN(DT_NODELABEL(row_5), gpios) << 8 | DT_GPIO_PIN(DT_NODELABEL(col_1), gpios),
+	DT_GPIO_PIN(DT_NODELABEL(row_5), gpios) << 8 | DT_GPIO_PIN(DT_NODELABEL(col_2), gpios),
+	DT_GPIO_PIN(DT_NODELABEL(row_5), gpios) << 8 | DT_GPIO_PIN(DT_NODELABEL(col_3), gpios),
+	DT_GPIO_PIN(DT_NODELABEL(row_5), gpios) << 8 | (32 + DT_GPIO_PIN(DT_NODELABEL(col_4), gpios)),
+	DT_GPIO_PIN(DT_NODELABEL(row_5), gpios) << 8 | DT_GPIO_PIN(DT_NODELABEL(col_5), gpios)
 
 };
 
 /* TODO check if C compiler handles this efficiently */
-static const uint32_t col_mask = 1 << 21 | 1 << 22 | 1 << 15 | 1 << 24 | 1 << 19;
-static const uint32_t row_mask0 = 1 << 28 | 1 << 11 | 1 << 31 | 1 << 30;
-static const uint32_t row_mask1 = 1 << 5;
+static const uint32_t row_mask = 1 << DT_GPIO_PIN(DT_NODELABEL(row_1), gpios) |
+								 1 << DT_GPIO_PIN(DT_NODELABEL(row_2), gpios) |
+								 1 << DT_GPIO_PIN(DT_NODELABEL(row_3), gpios) |
+								 1 << DT_GPIO_PIN(DT_NODELABEL(row_4), gpios) | 
+								 1 << DT_GPIO_PIN(DT_NODELABEL(row_5), gpios);
+static const uint32_t col_mask0 = 1 << DT_GPIO_PIN(DT_NODELABEL(col_1), gpios) |
+								  1 << DT_GPIO_PIN(DT_NODELABEL(col_2), gpios) |
+                                  1 << DT_GPIO_PIN(DT_NODELABEL(col_3), gpios) |
+								  1 << DT_GPIO_PIN(DT_NODELABEL(col_5), gpios);
+static const uint32_t col_mask1 = 1 << DT_GPIO_PIN(DT_NODELABEL(col_4), gpios);
 
 /**
  * optimized function for fast ISR, avoids port test
@@ -150,9 +223,6 @@ static inline void mypinclear(uint8_t pin)
 
 static nrfx_timer_t display_timer;
 
-
-
-
 /**
  * most driver variables in a single struct
  */
@@ -201,12 +271,12 @@ static void mb_display_deactivate(void)
 	nrf_timer_event_clear((display_timer.p_reg), event);
 
 	/* extinct whatever is active */
-	nrf_gpio_port_out_clear(NRF_P0, col_mask);
-	nrf_gpio_port_out_set(NRF_P0, row_mask0);
+	nrf_gpio_port_out_clear(NRF_P0, row_mask);
+	nrf_gpio_port_out_set(NRF_P0, col_mask0);
 #ifdef CONFIG_BOARD_BBC_MICROBIT_V2
-	nrf_gpio_port_out_set(NRF_P1, row_mask1);
+	nrf_gpio_port_out_set(NRF_P1, col_mask1);
 #endif
-	myscreen.current_pixel = 24;
+	myscreen.current_pixel = (DISPLAY_ROWS * DISPLAY_COLS) -1;
 }
 
 /**
@@ -228,14 +298,12 @@ static void prepare_next_frame(void)
 	const struct mb_image *img1;
 	const struct mb_image *img2 = NULL;
 	int scroll_offset;
-	int scrollsteps = 5;
 	int index;
 
 	if (myscreen.text) {
 		if (myscreen.scrolling) {
-			scrollsteps = 5;
-			index = myscreen.current_image / 5;
-			scroll_offset = myscreen.current_image - 5 * index;
+			index = myscreen.current_image / SYMBOL_WIDTH;
+			scroll_offset = myscreen.current_image - SYMBOL_WIDTH * index;
 		} else {
 			index = myscreen.current_image;
 			scroll_offset = 0;
@@ -248,8 +316,8 @@ static void prepare_next_frame(void)
 		img2 = &mb_font[b - ' '];
 	} else {
 		if (myscreen.scrolling) {
-			index = myscreen.current_image / 5;
-			scroll_offset = myscreen.current_image - 5 * index;
+			index = myscreen.current_image / SYMBOL_WIDTH;
+			scroll_offset = myscreen.current_image - SYMBOL_WIDTH * index;
 			if (index + 1 < myscreen.image_number) {
 				img2 = &myscreen.img[index + 1];
 			} else {
@@ -261,26 +329,27 @@ static void prepare_next_frame(void)
 		}
 		img1 = &myscreen.img[index];
 	}
+
 	/* Now draw the new frame as superposition
 	 * of two images.
 	 */
 
 	uint32_t frame = 0;
 
-	for (int x = 0; x < 5; x++) {
+	for (int x = 0; x < DISPLAY_COLS; x++) {
 		int offset = scroll_offset + x;
 
-		if (offset < 5) {
-			for (int y = 0; y < 5; y++) {
+		if (offset < DISPLAY_COLS) {
+			for (int y = 0; y < DISPLAY_ROWS; y++) {
 
 				if (((img1->row[y]) >> offset) & 1) {
-					frame |= 1 << (5 * y + x);
+					frame |= 1 << (DISPLAY_ROWS * y + x);
 				}
 			}
-		} else if (offset >= scrollsteps) {
-			for (int y = 0; y < 5; y++) {
-				if (((img2->row[y]) >> (offset - scrollsteps)) & 1) {
-					frame |= 1 << (5 * y + x);
+		} else if (offset >= SYMBOL_WIDTH) {
+			for (int y = 0; y < DISPLAY_ROWS; y++) {
+				if (((img2->row[y]) >> (offset - SYMBOL_WIDTH)) & 1) {
+					frame |= 1 << (DISPLAY_ROWS * y + x);
 				}
 			}
 		}
@@ -321,25 +390,25 @@ ISR_DIRECT_DECLARE(mb_display_refresh_pixel)
 	nrf_timer_event_clear((display_timer.p_reg), event);
 
 	/* deactivate active pixel */
-	nrf_gpio_port_out_set(NRF_P0, row_mask0);
+	nrf_gpio_port_out_set(NRF_P0, col_mask0);
 #ifdef CONFIG_BOARD_BBC_MICROBIT_V2
-	nrf_gpio_port_out_set(NRF_P1, row_mask1);
+	nrf_gpio_port_out_set(NRF_P1, col_mask1);
 #endif
 	/* prepare next pixel */
 	myscreen.current_pixel--;
 	if (myscreen.current_pixel < 0) {
-		myscreen.current_pixel = 24;
+		myscreen.current_pixel = (DISPLAY_ROWS * DISPLAY_COLS) -1;
 	}
 	/* activate new pixel */
 	if ((myscreen.image_buffer >> myscreen.current_pixel) & 1) {
-		int col_row = led_column_row[myscreen.current_pixel];
-		int row = col_row & 255;
+		int row_col = led_row_column[myscreen.current_pixel];
+		uint8_t column = row_col & 0xFF;
 
-		mypinclear(row);
-		nrf_gpio_port_out_clear(NRF_P0, col_mask);
-		int column = col_row >> 8;
+		mypinclear(column);
+		nrf_gpio_port_out_clear(NRF_P0, row_mask);
+		uint8_t row = row_col >> 8;
 
-		mypinset(column);
+		mypinset(row);
 	}
 
 	return 0;
@@ -371,9 +440,9 @@ static void init_display_timer(void)
 	 * 8 bits for counting are sufficient. It also means that it is flicker
 	 * free to video cameras that film with 1/50 exposure time.
 	 *
-	 * TODO: maybe this should be parametrized. 50Hz image refresh might
-	 * be considered sufficient and would half the load the refresh puts
-	 * on the system. Higher than 100Hz would be more agreable to the eye.
+	 * TODO: 50Hz image refresh might be considered sufficient and would
+	 * half the load the refresh puts on the system. Higher than 100Hz
+	 * would be more agreable to the eye.
 	 */
 
 	tcfg.bit_width = NRF_TIMER_BIT_WIDTH_8;
@@ -386,7 +455,7 @@ static void init_display_timer(void)
 	 */
 	nrfx_timer_init(&display_timer, &tcfg, dummyHandler);
 
-	display_timer.p_reg->CC[0] = 25; /* 2500 Hz pixel frequency */
+	display_timer.p_reg->CC[0] = 62500 / (DISPLAY_ROWS * DISPLAY_COLS * CONFIG_MICROBIT_DISPLAY_REFRESH_RATE_HZ); /* 2500 Hz pixel frequency */
 	display_timer.p_reg->SHORTS = NRF_TIMER_SHORT_COMPARE0_CLEAR_MASK;
 }
 
@@ -434,13 +503,13 @@ static int init_driver(const struct device *dev)
 
 	mb_display_deactivate(); /* initialize and deactivate */
 
-	for (int i = 0; i < 25; i++) {
+	for (int i = 0; i < DISPLAY_ROWS * DISPLAY_ROWS; i++) {
 		/* for uniformity between microbit v1 and v2, we accept to initialize
 		 * some gpio pins several times.
 		 */
-		uint16_t col_row = led_column_row[i];
+		uint16_t col_row = led_row_column[i];
 		int col = col_row >> 8;
-		int row = col_row & 255;
+		int row = col_row & 0xFF;
 		/* column configuration */
 		nrf_gpio_cfg(row, NRF_GPIO_PIN_DIR_OUTPUT, NRF_GPIO_PIN_INPUT_DISCONNECT,
 			 NRF_GPIO_PIN_NOPULL, NRF_GPIO_PIN_H0D1, NRF_GPIO_PIN_NOSENSE);
@@ -466,7 +535,7 @@ void mb_display_image_v2(uint32_t mode, int32_t duration,
 	myscreen.img = img;
 	myscreen.image_number = img_count;
 	myscreen.frame_number =
-		(myscreen.scrolling ? 5 * myscreen.image_number : myscreen.image_number);
+		(myscreen.scrolling ? SYMBOL_WIDTH * myscreen.image_number : myscreen.image_number);
 	myscreen.current_image = -1;
 	/* The next image to be shown
 	 * prepare empty frame, later add a frame each time we switch.
@@ -502,7 +571,7 @@ void mb_display_print_v2(uint32_t mode, int32_t duration, const char *fmt,
 
 	myscreen.loop = (mode & MB_DISPLAY_FLAG_LOOP) != 0;
 	myscreen.frame_number =
-		(myscreen.scrolling ? (myscreen.textlen - 1) * 5 : myscreen.textlen);
+		(myscreen.scrolling ? (myscreen.textlen - 1) * SYMBOL_WIDTH : myscreen.textlen);
 	myscreen.current_image = -1;
 	myscreen.text = true;
 	start_animation(duration);
