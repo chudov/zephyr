@@ -1,5 +1,6 @@
 /*
  * Copyright (c) 2017 Linaro Limited
+ * Copyright (c) 2021 Alexander Chudov <chudov@gmail.com>
  *
  * SPDX-License-Identifier: Apache-2.0
  */
@@ -40,6 +41,23 @@
 		};
 	};
 
+	led_matrix: matrix {
+		compatible = "microbit,matrixled";
+		status	   = "okay";
+		col-gpios-used = <&gpio0 &gpio1>;
+		row-gpios =   <&gpio0 13 GPIO_ACTIVE_HIGH>,
+				<&gpio0 14 GPIO_ACTIVE_HIGH>,
+				<&gpio0 15 GPIO_ACTIVE_HIGH>;
+		col-gpios =   <&gpio0  4 GPIO_ACTIVE_LOW>,
+				<&gpio0  5 GPIO_ACTIVE_LOW>,
+				<&gpio0  6 GPIO_ACTIVE_LOW>,
+				<&gpio0  7 GPIO_ACTIVE_LOW>,
+				<&gpio0  8 GPIO_ACTIVE_LOW>,
+				<&gpio0  9 GPIO_ACTIVE_LOW>,
+				<&gpio0 10 GPIO_ACTIVE_LOW>,
+				<&gpio0 11 GPIO_ACTIVE_LOW>,
+				<&gpio0 12 GPIO_ACTIVE_LOW>;
+	};
 };
 
 &gpiote {
